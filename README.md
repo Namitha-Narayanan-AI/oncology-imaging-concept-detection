@@ -14,3 +14,7 @@ The goal is to develop interpretable models that associate imaging features with
 ## Background
 
 This work extends prior MSc research on radiology concept detection using large-scale medical image datasets.
+
+
+## Current milestone:
+- Setting up reproducible PyTorch baseline using chest X-ray dataset (binary classification).
