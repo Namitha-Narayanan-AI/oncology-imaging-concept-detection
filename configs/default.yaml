@@ -1,0 +1,10 @@
+project-name: oncology-imaging-concept-detection
+task: image-classification
+framework: pytorch
+seed: 42
+num_Classes: 2
+image_size: 224
+batch_size: 32
+num_epochs: 10
+learning_rate: 0.001
+optimizer: adam
