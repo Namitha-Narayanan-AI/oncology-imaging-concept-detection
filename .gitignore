@@ -1,25 +1,12 @@
-# Ignore dataset
+.venv/
+venv/
+.idea/
+
 data/
 
-# Ignore virtual environment
-.venv/
-
-# Python cache
 __pycache__/
 *.pyc
 
-#Jupyter
-.ipynb_checkpioints/
+results/models/
 
-#Generated outputs
-logs/*
-results/*
-experiments/*
-
-#Keep folder placeholders
-!logs/.gitkeep
-!results/.gitkeep
-!experiments/.gitkeep
-
-# Mac system files
 .DS_Store
