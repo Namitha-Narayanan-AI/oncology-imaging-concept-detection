@@ -1,0 +1,13 @@
+{
+    "true_negative": 69,
+    "false_positive": 165,
+    "false_negative": 2,
+    "true_positive": 388,
+    "sensitivity": 0.9948717948717949,
+    "specificity": 0.2948717948717949,
+    "false_negative_rate": 0.005128205128205128,
+    "false_positive_rate": 0.7051282051282052,
+    "positive_predictive_value": 0.701627486437613,
+    "negative_predictive_value": 0.971830985915493,
+    "balanced_accuracy": 0.6448717948717949
+}
