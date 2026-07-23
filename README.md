@@ -1,119 +1,212 @@
 # Oncology Imaging Concept Detection
 
-A PyTorch medical imaging pipeline built toward AI-assisted oncology, starting with a chest X-ray classification baseline and progressing toward clinically meaningful evaluation, explainability, and oncology-relevant imaging workflows.
+A reproducible PyTorch medical-imaging research pipeline built toward **AI-assisted oncology**.
+
+The project begins with a controlled chest X-ray classification baseline to establish the full evaluation workflow — training, clinical metrics, error analysis, explainability, and decision-threshold analysis — before moving into **oncology-specific imaging, radiomics, and lesion-level analysis**.
 
 ---
 
-## Overview
+## Research Goal
 
-Medical imaging pipelines for oncology present unique evaluation challenges: lesion detection, class imbalance, asymmetric misclassification costs, and the need for clinically interpretable model behaviour. This project builds toward that space systematically, beginning with a reproducible chest X-ray baseline before progressing to oncology-specific imaging tasks such as lung nodule analysis, radiomics, and explainable tumour imaging.
+Medical-imaging models should not be judged by accuracy alone.
 
-The current phase focuses on a controlled medical-imaging classification task to establish the core workflow: dataset loading, model training, clinical metric reporting, error analysis, and Grad-CAM visual explanation.
+This project investigates how model behaviour changes when we examine:
+
+- class-specific errors,
+- sensitivity and specificity,
+- false-positive and false-negative trade-offs,
+- visual explanations,
+- prediction confidence,
+- and decision thresholds.
+
+**Phase 1** uses pneumonia-vs-normal chest X-rays as a controlled baseline.  
+**Phase 2** will transition to cancer-specific imaging.
 
 ---
 
-## Phase 1 - Chest X-Ray Baseline
+## Phase 1 — Chest X-Ray Baseline
 
-Chest X-ray classification, pneumonia vs normal, serves as a controlled starting point. The dataset is public, well-structured, and widely used for medical imaging experimentation, making it suitable for validating the pipeline before moving into cancer-specific imaging.
+**Status:** Completed
 
 ### Dataset
 
-[Chest X-Ray Images (Pneumonia)](https://www.kaggle.com/datasets/paultimothymooney/chest-xray-pneumonia) - Kermany et al., *Cell* 2018  
-Source dataset: [Mendeley Data](https://data.mendeley.com/datasets/rscbjbr9sj/2)  
-License: CC BY 4.0  
-5,216 training images - 624 test images - Classes: `NORMAL`, `PNEUMONIA`
+- **Task:** `NORMAL` vs `PNEUMONIA`
+- **Training images:** 5,216
+- **Test images:** 624
+- **Source:** Chest X-Ray Images (Pneumonia), associated with Kermany et al., *Cell* (2018)
+- **License:** CC BY 4.0
 
-### Model
+Dataset links:
 
-- `SimpleCNN` - 3-layer convolutional backbone
-- Input: `[B, 3, 224, 224]`
-- Output: binary logits `[B, 2]`
-- Loss: Cross-Entropy
-- Optimiser: Adam (`lr=1e-3`)
+- [Kaggle dataset](https://www.kaggle.com/datasets/paultimothymooney/chest-xray-pneumonia)
+- [Mendeley source](https://data.mendeley.com/datasets/rscbjbr9sj/2)
 
-### Training
+### Baseline Model
 
-| Epoch | Train Loss | Train Acc | Val Acc |
-|---|---:|---:|---:|
-| 1 | 0.1924 | 91.93% | 56.25% |
-| 2 | 0.0757 | 97.26% | 68.75% |
-| 3 | 0.0564 | 97.89% | 93.75% |
+| Component | Configuration |
+|---|---|
+| Architecture | `SimpleCNN` |
+| Input | `3 × 224 × 224` |
+| Output | 2 logits |
+| Loss | Cross-Entropy |
+| Optimiser | Adam |
+| Learning rate | `1e-3` |
+| Epochs | 3 |
 
-### Test Set Evaluation
+The simple architecture is intentional: Phase 1 focuses on building and interrogating the evaluation pipeline rather than claiming state-of-the-art pneumonia performance.
+
+---
+
+## Baseline Results
+
+### Standard Test Metrics
 
 | Metric | Score |
 |---|---:|
-| Accuracy | 73.24% |
-| Precision | 80.30% |
-| Recall | 73.24% |
-| F1-Score | 68.40% |
+| Accuracy | **73.24%** |
+| Weighted Precision | **80.30%** |
+| Weighted Recall | **73.24%** |
+| Weighted F1 | **68.40%** |
 
 ### Confusion Matrix
 
-| Actual class | Predicted Normal | Predicted Pneumonia |
+| Actual | Predicted Normal | Predicted Pneumonia |
 |---|---:|---:|
 | Normal | 69 | 165 |
 | Pneumonia | 2 | 388 |
 
-The model misses 2 pneumonia cases out of 390, indicating high sensitivity, but over-flags 165 normal cases as diseased, indicating low specificity. This result demonstrates why accuracy alone is insufficient for medical imaging evaluation.
-
----
-
-## Clinical Error Analysis and Explainability
-
-To move beyond aggregate accuracy, the baseline was evaluated using clinical error analysis and Grad-CAM visualisation.
-
-| Clinical metric | Score |
-|---|---:|
-| Sensitivity | 99.49% |
-| Specificity | 29.49% |
-| False-negative rate | 0.51% |
-| False-positive rate | 70.51% |
-| Positive predictive value | 70.16% |
-| Negative predictive value | 97.18% |
-| Balanced accuracy | 64.49% |
-
-The model behaves like a high-sensitivity screening classifier: it identifies nearly all pneumonia cases, but frequently over-predicts pneumonia in normal images. The error analysis produced 165 false positives and 2 false negatives.
-
-Grad-CAM visualisations were generated for selected misclassified examples to inspect whether the model attends to clinically relevant lung regions or non-clinical image artifacts.
-
-### Representative False Positives
-
-![False Positive Grad-CAM 0](results/figures/gradcam/false_positive/0_NORMAL_pred_PNEUMONIA.png)
-
-![False Positive Grad-CAM 1](results/figures/gradcam/false_positive/1_NORMAL_pred_PNEUMONIA.png)
-
-![False Positive Grad-CAM 2](results/figures/gradcam/false_positive/2_NORMAL_pred_PNEUMONIA.png)
-
-![False Positive Grad-CAM 3](results/figures/gradcam/false_positive/3_NORMAL_pred_PNEUMONIA.png)
-
-### Representative False Negatives
-
-![False Negative Grad-CAM 390](results/figures/gradcam/false_negative/390_PNEUMONIA_pred_NORMAL.png)
-
-![False Negative Grad-CAM 391](results/figures/gradcam/false_negative/391_PNEUMONIA_pred_NORMAL.png)
-
-The representative false-positive examples show broad activation across lung fields, rib structures, and some image-boundary regions. This suggests that the model may be responding to general thoracic texture, contrast, rib patterns, or acquisition-related cues rather than a clearly disease-specific abnormality.
-
-The false-negative examples show weaker or less clinically focused activation. One example shows activation near the image marker/top-left region rather than the lung fields, suggesting possible shortcut learning or artifact sensitivity.
-
-A fuller interpretation is available in [`docs/error_analysis_notes.md`](docs/error_analysis_notes.md).
-
----
-
-## Outputs
-
-### Confusion Matrix
-
 ![Confusion Matrix](results/figures/confusion_matrix.png)
 
-### Prediction Examples
-
-![Prediction Examples](results/figures/prediction_examples.png)
+The model detects almost every pneumonia case, but it also labels many normal images as pneumonia. This is a useful example of why aggregate accuracy does not fully describe clinical behaviour.
 
 ---
 
-## Project Structure
+## Clinical Error Profile
+
+| Clinical Metric | Score |
+|---|---:|
+| Sensitivity | **99.49%** |
+| Specificity | **29.49%** |
+| False-negative rate | **0.51%** |
+| False-positive rate | **70.51%** |
+| Positive predictive value | **70.16%** |
+| Negative predictive value | **97.18%** |
+| Balanced accuracy | **64.49%** |
+
+At the default decision rule, the model behaves like a **high-sensitivity, low-specificity classifier**.
+
+- Only **2 / 390** pneumonia cases are missed.
+- **165 / 234** normal cases are incorrectly labelled as pneumonia.
+
+The acceptable operating point depends on the intended clinical use case and on the relative cost of false positives and false negatives.
+
+---
+
+## Explainability — Grad-CAM
+
+Grad-CAM was used to inspect whether misclassified images were being judged from clinically meaningful lung regions or from possible shortcut features.
+
+### False-positive examples
+
+<p align="center">
+  <img src="results/figures/gradcam/false_positive/0_NORMAL_pred_PNEUMONIA.png" width="47%" />
+  <img src="results/figures/gradcam/false_positive/1_NORMAL_pred_PNEUMONIA.png" width="47%" />
+</p>
+
+### False-negative examples
+
+<p align="center">
+  <img src="results/figures/gradcam/false_negative/390_PNEUMONIA_pred_NORMAL.png" width="47%" />
+  <img src="results/figures/gradcam/false_negative/391_PNEUMONIA_pred_NORMAL.png" width="47%" />
+</p>
+
+Several false-positive examples show broad activation across lung fields, ribs, and image boundaries rather than a clearly localised abnormality. One false-negative example shows attention near an image marker rather than the lung field.
+
+These observations suggest possible **shortcut learning or sensitivity to acquisition-related cues**, although Grad-CAM alone cannot establish causal model reasoning.
+
+Detailed notes: [`docs/error_analysis_notes.md`](docs/error_analysis_notes.md)
+
+---
+
+## Decision-Threshold Analysis
+
+The baseline originally predicts the class with the larger output score. For a two-class softmax model, this corresponds to an implicit probability threshold near `0.50`.
+
+To examine the model as a clinical decision system, pneumonia probabilities were collected and the same trained network was evaluated across multiple thresholds.
+
+**No retraining was performed.**
+
+### Default threshold: `0.50`
+
+| Metric | Score |
+|---|---:|
+| Sensitivity | **99.49%** |
+| Specificity | **29.49%** |
+| Balanced accuracy | **64.49%** |
+| Pneumonia precision | **70.16%** |
+| Pneumonia F1 | **82.29%** |
+| False positives | **165** |
+| False negatives | **2** |
+
+### Highest exploratory balanced accuracy: `0.999`
+
+| Metric | Score |
+|---|---:|
+| Accuracy | **82.37%** |
+| Sensitivity | **84.10%** |
+| Specificity | **79.49%** |
+| Balanced accuracy | **81.79%** |
+| Pneumonia precision | **87.23%** |
+| Pneumonia F1 | **85.64%** |
+| False positives | **48** |
+| False negatives | **62** |
+
+![Threshold Analysis](results/figures/threshold_analysis.png)
+
+Increasing the threshold greatly reduces false positives, but at very high thresholds the number of missed pneumonia cases rises sharply.
+
+> **There is no universally best threshold. The appropriate operating point depends on the clinical objective and the relative cost of different errors.**
+
+### Methodological note
+
+The threshold sweep was performed **post hoc on the existing test predictions**. Therefore, `0.999` is **not** presented as an optimised clinical threshold.
+
+A rigorous workflow would:
+
+1. train on the training set,
+2. select the operating threshold on an independent validation cohort,
+3. freeze that threshold,
+4. evaluate once on an untouched test cohort.
+
+---
+
+## What Phase 1 Established
+
+```text
+Dataset
+  ↓
+Training
+  ↓
+Standard evaluation
+  ↓
+Clinical metrics
+  ↓
+Error analysis
+  ↓
+Grad-CAM
+  ↓
+Probability extraction
+  ↓
+Threshold analysis
+  ↓
+Clinical interpretation
+```
+
+The main lesson is that medical-imaging performance must be interpreted through the **error profile and intended clinical use**, not through accuracy alone.
+
+---
+
+## Repository Structure
 
 ```text
 oncology-imaging-concept-detection/
@@ -126,19 +219,13 @@ oncology-imaging-concept-detection/
 │   ├── figures/
 │   │   ├── confusion_matrix.png
 │   │   ├── prediction_examples.png
+│   │   ├── threshold_analysis.png
 │   │   └── gradcam/
-│   │       ├── false_positive/
-│   │       │   ├── 0_NORMAL_pred_PNEUMONIA.png
-│   │       │   ├── 1_NORMAL_pred_PNEUMONIA.png
-│   │       │   ├── 2_NORMAL_pred_PNEUMONIA.png
-│   │       │   └── 3_NORMAL_pred_PNEUMONIA.png
-│   │       └── false_negative/
-│   │           ├── 390_PNEUMONIA_pred_NORMAL.png
-│   │           └── 391_PNEUMONIA_pred_NORMAL.png
 │   └── metrics/
 │       ├── test_metrics.json
 │       ├── clinical_metrics.json
-│       └── error_analysis.csv
+│       ├── error_analysis.csv
+│       └── threshold_analysis.csv
 ├── src/
 │   ├── dataset.py
 │   ├── download_dataset.py
@@ -147,6 +234,7 @@ oncology-imaging-concept-detection/
 │   ├── evaluate.py
 │   ├── error_analysis.py
 │   ├── gradcam_analysis.py
+│   ├── threshold_analysis.py
 │   └── visualize_results.py
 ├── requirements.txt
 └── README.md
@@ -154,22 +242,20 @@ oncology-imaging-concept-detection/
 
 ---
 
-## Direction
+## Reproduce the Baseline
 
-The baseline establishes the core workflow for clinically oriented medical imaging AI: reproducible training, evaluation beyond accuracy, error analysis, and visual explainability.
-
-The next stage will move toward oncology-relevant imaging, with emphasis on lung imaging, radiomics features, Grad-CAM/error analysis, and clinically meaningful model validation.
-
----
-
-## Setup
+### 1. Clone and install
 
 ```bash
 git clone https://github.com/Namitha-Narayanan-AI/oncology-imaging-concept-detection
 cd oncology-imaging-concept-detection
-python -m venv .venv && source .venv/bin/activate
+
+python -m venv .venv
+source .venv/bin/activate
 pip install -r requirements.txt
 ```
+
+### 2. Run the pipeline
 
 ```bash
 python src/download_dataset.py
@@ -177,19 +263,40 @@ python src/train.py
 python src/evaluate.py
 python src/error_analysis.py
 python src/gradcam_analysis.py
+python src/threshold_analysis.py
 python src/visualize_results.py
 ```
 
 ---
 
-## Dataset Attribution
+## Research Direction
 
-This project uses the public Chest X-Ray Images (Pneumonia) dataset hosted on Kaggle and sourced from the Mendeley dataset released with Kermany et al., *Cell* 2018.
+### Phase 2 — Oncology Imaging
 
-Dataset:
+The next stage will move from the controlled pneumonia baseline to **cancer-specific imaging**.
 
-- Kaggle: [Chest X-Ray Images (Pneumonia)](https://www.kaggle.com/datasets/paultimothymooney/chest-xray-pneumonia)
-- Source: [Mendeley Data](https://data.mendeley.com/datasets/rscbjbr9sj/2)
-- License: CC BY 4.0
+Planned direction:
 
-This repository includes selected Grad-CAM visualisation outputs derived from the public dataset for educational and research-portfolio purposes.
+- thoracic CT,
+- lung nodule analysis,
+- lesion-level classification,
+- radiomic feature extraction,
+- malignancy prediction,
+- tumour-focused explainability,
+- clinically meaningful validation.
+
+The aim is to evolve this repository into an oncology-focused computational imaging project while preserving the same emphasis on **reproducibility, interpretability, and clinically relevant evaluation**.
+
+---
+
+## Limitations
+
+- Phase 1 is a pneumonia benchmark, not an oncology task.
+- The baseline uses a small custom CNN rather than a clinically validated architecture.
+- The dataset is imbalanced.
+- The predefined validation split is limited.
+- Threshold analysis is exploratory and uses test predictions.
+- Grad-CAM is a coarse post-hoc explanation method.
+- External generalisation has not yet been evaluated.
+
+---
