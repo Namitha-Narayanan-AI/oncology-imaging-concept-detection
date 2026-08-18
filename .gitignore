@@ -5,8 +5,13 @@ venv/
 data/
 
 __pycache__/
-*.pyc
+*.py[cod]
 
 results/models/
 
 .DS_Store
+
+# Phase 2 generated training artifacts
+results/phase2/baseline/
+results/phase2/baseline_full/
+results/phase2/baseline_final/*.pt

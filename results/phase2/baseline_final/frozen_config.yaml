@@ -1,0 +1,72 @@
+project_name: oncology-imaging-concept-detection
+phase: phase2
+task: lidc_3d_nodule_characterisation
+research_direction: robust_multi_task_pulmonary_nodule_characterisation_and_radiologist_assessed_malignancy_risk_prediction_from_3d_ct
+seed: 42
+data:
+  dataset_name: LIDC-IDRI
+  raw_dicom_dir: data/lidc/raw
+  annotation_dir: data/lidc/raw
+  manifest_path: data/lidc/manifest.csv
+  splits_dir: data/lidc/splits
+  crops_dir: data/lidc/crops
+  cache_dir: data/lidc/cache
+preprocessing:
+  target_spacing_mm:
+  - 1.0
+  - 1.0
+  - 1.0
+  crop_size_voxels:
+  - 64
+  - 64
+  - 64
+  hu_clip_range:
+  - -1000
+  - 400
+  normalization: hu_clip_minmax
+splits:
+  split_level: patient
+  train_fraction: 0.7
+  val_fraction: 0.15
+  test_fraction: 0.15
+  group_keys:
+  - patient_id
+  leakage_controls:
+  - keep_all_nodules_from_same_patient_in_one_split
+  - keep_all_reader_annotations_for_same_nodule_in_one_split
+  - select_thresholds_on_validation_only
+targets:
+  primary:
+    name: radiologist_assessed_malignancy_risk
+    source: LIDC-IDRI reader malignancy ratings
+    label_semantics: subjective_radiologist_assessment_not_pathology_confirmed_diagnosis
+    aggregation: median_reader_rating
+    formulation: ordinal_classification
+  auxiliary:
+  - name: spiculation
+    aggregation: median_reader_rating
+  - name: lobulation
+    aggregation: median_reader_rating
+  - name: texture
+    aggregation: median_reader_rating
+  - name: margin
+    aggregation: median_reader_rating
+  - name: sphericity
+    aggregation: median_reader_rating
+vertical_slice:
+  implement_training: true
+  max_patients: null
+  goals:
+  - inspect_one_lidc_case
+  - build_manifest_with_reader_ratings
+  - create_patient_level_splits
+  - verify_label_semantics
+  - prepare_3d_pipeline_placeholders
+outputs:
+  manifest_summary_path: results/phase2/manifest_summary.json
+  split_summary_path: results/phase2/split_summary.json
+  baseline_dir: results/phase2/baseline_final
+training:
+  batch_size: 2
+  learning_rate: 0.001
+  epochs: 5

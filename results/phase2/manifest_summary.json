@@ -1,0 +1,21 @@
+{
+  "manifest_level": "reader_annotation",
+  "patients": 742,
+  "series": 748,
+  "reader_annotations": 3918,
+  "binary_target": "ratings_1_2_low_risk_0__ratings_4_5_high_risk_1__rating_3_excluded",
+  "sampling_unit": "characterized_reader_level_nodule_annotation",
+  "malignancy_rating_counts": {
+    "1": 901,
+    "2": 1522,
+    "4": 848,
+    "5": 647
+  },
+  "malignancy_rating_3_excluded": 2344,
+  "invalid_malignancy_ratings_excluded": 2,
+  "class_counts": {
+    "low_risk_0": 2423,
+    "high_risk_1": 1495
+  },
+  "label_semantics": "subjective_radiologist_assessment_not_pathology_confirmed_diagnosis"
+}

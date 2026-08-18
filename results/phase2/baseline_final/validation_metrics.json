@@ -1,0 +1,28 @@
+{
+  "threshold": 0.49163341522216797,
+  "selection_split": "validation",
+  "objective": "balanced_accuracy",
+  "validation_balanced_accuracy": 0.5318069376510935,
+  "validation_metrics": {
+    "threshold": 0.49163341522216797,
+    "roc_auc": 0.4709759937032664,
+    "pr_auc": 0.4272706385509888,
+    "accuracy": 0.4944029850746269,
+    "sensitivity": 0.9173553719008265,
+    "specificity": 0.14625850340136054,
+    "precision_ppv": 0.4693446088794926,
+    "npv": 0.6825396825396826,
+    "f1": 0.620979020979021,
+    "balanced_accuracy": 0.5318069376510935,
+    "confusion_matrix": [
+      [
+        43,
+        251
+      ],
+      [
+        20,
+        222
+      ]
+    ]
+  }
+}

@@ -1,0 +1,15 @@
+{
+  "train": {
+    "patients": 519,
+    "reader_annotations": 2754
+  },
+  "val": {
+    "patients": 111,
+    "reader_annotations": 536
+  },
+  "test": {
+    "patients": 112,
+    "reader_annotations": 628
+  },
+  "patient_overlap": false
+}

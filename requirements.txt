@@ -1,7 +1,9 @@
 torch
 torchvision
+numpy
+pydicom
+PyYAML
 matplotlib
 pandas
 scikit-learn
-kagglehub
 kagglehub
