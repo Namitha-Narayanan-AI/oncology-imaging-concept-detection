@@ -1,0 +1,9 @@
+concept,split,rating_1,rating_2,rating_3,rating_4,rating_5,missing_or_invalid
+spiculation,train,1974,365,175,114,126,0
+spiculation,val,335,66,65,35,35,0
+spiculation,test,425,92,44,32,35,0
+spiculation,total,2734,523,284,181,196,0
+lobulation,train,1787,501,242,135,89,0
+lobulation,val,321,102,63,34,16,0
+lobulation,test,377,130,71,27,23,0
+lobulation,total,2485,733,376,196,128,0

@@ -1,0 +1,27 @@
+{
+  "threshold": 0.5027545094490051,
+  "roc_auc": 0.5577654808959157,
+  "pr_auc": 0.4425041489822711,
+  "accuracy": 0.4840764331210191,
+  "sensitivity": 0.8221343873517787,
+  "specificity": 0.256,
+  "precision_ppv": 0.4271047227926078,
+  "npv": 0.6808510638297872,
+  "f1": 0.5621621621621622,
+  "balanced_accuracy": 0.5390671936758893,
+  "confusion_matrix": [
+    [
+      96,
+      279
+    ],
+    [
+      45,
+      208
+    ]
+  ],
+  "n_evaluated": 628,
+  "negative_count": 375,
+  "positive_count": 253,
+  "sample_count": 628,
+  "high_risk_prevalence": 0.4028662420382166
+}

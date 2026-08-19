@@ -1,0 +1,57 @@
+project_name: oncology-imaging-concept-detection
+phase: phase2
+task: multi_label_pulmonary_nodule_concept_model
+seed: 42
+data:
+  dataset_name: LIDC-IDRI
+  manifest_path: data/lidc/manifest.csv
+preprocessing:
+  target_spacing_mm:
+  - 1.0
+  - 1.0
+  - 1.0
+  crop_size_voxels:
+  - 64
+  - 64
+  - 64
+  hu_clip_range:
+  - -1000
+  - 400
+  normalization: hu_clip_minmax
+targets:
+  malignancy:
+    low:
+    - 1
+    - 2
+    excluded:
+    - 3
+    high:
+    - 4
+    - 5
+  spiculation:
+    low:
+    - 1
+    - 2
+    masked:
+    - 3
+    high:
+    - 4
+    - 5
+  lobulation:
+    low:
+    - 1
+    - 2
+    masked:
+    - 3
+    high:
+    - 4
+    - 5
+training:
+  batch_size: 2
+  learning_rate: 0.001
+  optimizer: Adam
+  epochs: 5
+  device: cpu
+  checkpoint_selection: validation_malignancy_loss
+outputs:
+  multitask_dir: results/phase2/multitask_final

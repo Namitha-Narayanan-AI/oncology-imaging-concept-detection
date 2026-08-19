@@ -14,6 +14,18 @@ from .crop_extraction import extract_nodule_crop, preprocess_ct_crop
 from .dicom_io import load_ct_series
 
 
+def binary_concept_target(rating: Any) -> tuple[float, bool]:
+    """Map LIDC ratings 1-2/4-5 to 0/1 and mask 3 or missing values."""
+    if pd.isna(rating):
+        return 0.0, False
+    value = int(rating)
+    if value in (1, 2):
+        return 0.0, True
+    if value in (4, 5):
+        return 1.0, True
+    return 0.0, False
+
+
 class LIDCNoduleDataset(Dataset):
     """Load one raw CT series and create one nodule crop on each item request."""
 
@@ -67,10 +79,29 @@ class LIDCNoduleDataset(Dataset):
             series, annotation, self.crop_size, self.target_spacing
         )
         values = preprocess_ct_crop(crop.values, self.hu_clip_range)
+        spiculation_target, spiculation_valid = binary_concept_target(
+            row.get("spiculation")
+        )
+        lobulation_target, lobulation_valid = binary_concept_target(
+            row.get("lobulation")
+        )
         return {
             "image": torch.from_numpy(values).unsqueeze(0),
             "target": torch.tensor(float(row["malignancy_risk_label"]), dtype=torch.float32),
+            "malignancy_target": torch.tensor(
+                float(row["malignancy_risk_label"]), dtype=torch.float32
+            ),
+            "spiculation_target": torch.tensor(spiculation_target, dtype=torch.float32),
+            "spiculation_valid": torch.tensor(spiculation_valid, dtype=torch.bool),
+            "lobulation_target": torch.tensor(lobulation_target, dtype=torch.float32),
+            "lobulation_valid": torch.tensor(lobulation_valid, dtype=torch.bool),
             "annotation_id": str(row["annotation_id"]),
             "patient_id": str(row["patient_id"]),
             "malignancy_rating": int(row["malignancy"]),
+            "spiculation_rating": (
+                int(row["spiculation"]) if not pd.isna(row.get("spiculation")) else -1
+            ),
+            "lobulation_rating": (
+                int(row["lobulation"]) if not pd.isna(row.get("lobulation")) else -1
+            ),
         }

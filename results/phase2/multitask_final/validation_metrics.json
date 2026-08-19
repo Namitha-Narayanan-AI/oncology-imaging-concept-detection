@@ -1,0 +1,88 @@
+{
+  "selected_epoch": 5,
+  "thresholds": {
+    "malignancy": 0.5027545094490051,
+    "spiculation": 0.5025316476821899,
+    "lobulation": 0.5225029587745667
+  },
+  "metrics": {
+    "malignancy": {
+      "threshold": 0.5027545094490051,
+      "roc_auc": 0.5962922359026255,
+      "pr_auc": 0.517287885122802,
+      "accuracy": 0.5597014925373134,
+      "sensitivity": 0.8677685950413223,
+      "specificity": 0.30612244897959184,
+      "precision_ppv": 0.5072463768115942,
+      "npv": 0.7377049180327869,
+      "f1": 0.6402439024390244,
+      "balanced_accuracy": 0.5869455220104571,
+      "confusion_matrix": [
+        [
+          90,
+          204
+        ],
+        [
+          32,
+          210
+        ]
+      ],
+      "n_evaluated": 536,
+      "negative_count": 294,
+      "positive_count": 242,
+      "selection_objective": "validation_balanced_accuracy"
+    },
+    "spiculation": {
+      "threshold": 0.5025316476821899,
+      "roc_auc": 0.46441040256501603,
+      "pr_auc": 0.14116450959216145,
+      "accuracy": 0.8407643312101911,
+      "sensitivity": 0.04285714285714286,
+      "specificity": 0.9800498753117207,
+      "precision_ppv": 0.2727272727272727,
+      "npv": 0.8543478260869565,
+      "f1": 0.07407407407407407,
+      "balanced_accuracy": 0.5114535090844318,
+      "confusion_matrix": [
+        [
+          393,
+          8
+        ],
+        [
+          67,
+          3
+        ]
+      ],
+      "n_evaluated": 471,
+      "negative_count": 401,
+      "positive_count": 70,
+      "selection_objective": "validation_balanced_accuracy"
+    },
+    "lobulation": {
+      "threshold": 0.5225029587745667,
+      "roc_auc": 0.5319621749408983,
+      "pr_auc": 0.11425922731224275,
+      "accuracy": 0.3699788583509514,
+      "sensitivity": 0.76,
+      "specificity": 0.32387706855791965,
+      "precision_ppv": 0.11728395061728394,
+      "npv": 0.9194630872483222,
+      "f1": 0.20320855614973263,
+      "balanced_accuracy": 0.5419385342789598,
+      "confusion_matrix": [
+        [
+          137,
+          286
+        ],
+        [
+          12,
+          38
+        ]
+      ],
+      "n_evaluated": 473,
+      "negative_count": 423,
+      "positive_count": 50,
+      "selection_objective": "validation_balanced_accuracy"
+    }
+  }
+}

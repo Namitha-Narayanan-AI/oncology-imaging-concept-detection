@@ -15,3 +15,5 @@ results/models/
 results/phase2/baseline/
 results/phase2/baseline_full/
 results/phase2/baseline_final/*.pt
+
+results/phase2/multitask_final/*.pt
